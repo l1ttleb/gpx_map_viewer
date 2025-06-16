@@ -78,8 +78,12 @@
         <button id="showLocationBtn" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105">
             Show My Location
         </button>
+        <!-- New "Clear GPX" button -->
+        <button id="clearGpxBtn" class="bg-purple-500 hover:bg-purple-600 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105">
+            Clear GPX
+        </button>
         <button id="clearMapBtn" class="bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105">
-            Clear Map
+            Clear All
         </button>
     </div>
 
@@ -190,7 +194,7 @@
                     const trackPoints = parseGpx(gpxXml);
 
                     if (trackPoints.length > 0) {
-                        // Clear previous GPX layer if exists
+                        // Clear previous GPX layer if exists before adding new one
                         if (gpxLayer) {
                             map.removeLayer(gpxLayer);
                         }
@@ -276,9 +280,24 @@
         });
 
         /**
+         * Clears only the GPX track from the map.
+         */
+        document.getElementById('clearGpxBtn').addEventListener('click', function() {
+            if (gpxLayer) {
+                map.removeLayer(gpxLayer);
+                gpxLayer = null; // Clear the reference
+                showMessageBox('GPX track cleared!');
+            } else {
+                showMessageBox('No GPX track currently on the map to clear.');
+            }
+        });
+
+
+        /**
          * Clears all GPX tracks and location markers from the map.
          */
         document.getElementById('clearMapBtn').addEventListener('click', function() {
+            // Re-use clearGpxBtn functionality
             if (gpxLayer) {
                 map.removeLayer(gpxLayer);
                 gpxLayer = null;
@@ -288,7 +307,7 @@
                 currentLocationMarker = null;
             }
             initMap(); // Re-initialize map to default view
-            showMessageBox('Map cleared!');
+            showMessageBox('Map cleared (GPX and Location)!');
         });
 
         // Initialize map when the window loads
